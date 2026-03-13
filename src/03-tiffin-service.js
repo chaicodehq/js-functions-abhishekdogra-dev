@@ -41,12 +41,70 @@
  */
 export function createTiffinPlan({ name, mealType = "veg", days = 30 } = {}) {
   // Your code here
+  //   1. createTiffinPlan({ name, mealType = "veg", days = 30 })
+  //  *      - Destructured parameter with defaults!
+  //  *      - Meal prices per day: veg=80, nonveg=120, jain=90
+  //  *      - Agar mealType unknown hai, return null
+  //  *      - Agar name missing/empty, return null
+  //  *      - Return: { name, mealType, days, dailyRate, totalCost }
+
+  if (name === "" || name === undefined) return null;
+
+  let mealTypes = { veg: 80, nonveg: 120, jain: 90 };
+
+  if (!Object.keys(mealTypes).includes(mealType.toLowerCase())) return null;
+
+  let dailyRate = mealTypes[mealType.toLowerCase()];
+  let totalCost = dailyRate * days;
+
+  return { name, mealType, days, dailyRate, totalCost };
 }
 
 export function combinePlans(...plans) {
   // Your code here
+  //    *   2. combinePlans(...plans)
+  //  *      - Rest parameter! Takes any number of plan objects
+  //  *      - Each plan: { name, mealType, days, dailyRate, totalCost }
+  //  *      - Return: { totalCustomers, totalRevenue, mealBreakdown }
+  //  *      - mealBreakdown: { veg: count, nonveg: count, ... }
+  //  *      - Agar koi plans nahi diye, return null
+
+  if (plans.length === 0) return null;
+
+  let totalCustomers = plans.length;
+  let totalRevenue = plans.reduce((sum, e) => sum + e.totalCost, 0);
+  let mealBreakdown = plans.reduce((acc, e) => {
+    acc[e.mealType] = (acc[e.mealType] || 0) + 1;
+    return acc;
+  }, {});
+
+  return { totalCustomers, totalRevenue, mealBreakdown };
 }
 
 export function applyAddons(plan, ...addons) {
   // Your code here
+  //    *   3. applyAddons(plan, ...addons)
+  //  *      - plan: { name, mealType, days, dailyRate, totalCost }
+  //  *      - Each addon: { name: "raita", price: 15 }
+  //  *      - Add each addon price to dailyRate
+  //  *      - Recalculate totalCost = new dailyRate * days
+  //  *      - Return NEW plan object (don't modify original)
+  //  *      - addonNames: array of addon names added
+  //  *      - Agar plan null hai, return null
+
+  if (plan === null) return null;
+
+  let newPlan = structuredClone(plan);
+
+  if (addons.length === 0) return newPlan;
+
+  let totalAddOnPrice = addons.reduce((sum, e) => e.price + sum, 0);
+
+  newPlan.dailyRate += totalAddOnPrice;
+
+  newPlan.totalCost = newPlan.dailyRate * newPlan.days;
+
+  newPlan.addonNames = addons.map((a) => a.name);
+
+  return newPlan;
 }

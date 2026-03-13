@@ -54,28 +54,90 @@
  */
 export function pipe(...fns) {
   // Your code here
+  function pipeFunction(x) {
+    if (fns.length === 0) return x;
+
+    let result = x;
+
+    fns.forEach((e) => {
+      result = e(result);
+    });
+    return result;
+  }
+  return pipeFunction;
 }
 
 export function compose(...fns) {
   // Your code here
+  function reversePipeFunction(x) {
+    if (fns.length === 0) return x;
+
+    let fnsReverse = fns.reverse();
+
+    let result = x;
+
+    fnsReverse.forEach((e) => {
+      result = e(result);
+    });
+    return result;
+  }
+  return reversePipeFunction;
 }
 
 export function grind(spice) {
   // Your code here
+  return { ...spice, form: "powder" };
 }
 
 export function roast(spice) {
   // Your code here
+  return { ...spice, roasted: true, aroma: "strong" };
 }
 
 export function mix(spice) {
   // Your code here
+  return { ...spice, mixed: true };
 }
 
 export function pack(spice) {
   // Your code here
+  return { ...spice, packed: true, label: `${spice.name} Masala` };
 }
 
 export function createRecipe(steps) {
   // Your code here
+  //    7. createRecipe(steps)
+  //  *      - steps: array of step name strings, e.g., ["grind", "roast", "pack"]
+  //  *      - Maps step names to functions: "grind"=>grind, "roast"=>roast,
+  //  *        "mix"=>mix, "pack"=>pack
+  //  *      - Returns a piped function that applies steps in order
+  //  *      - Unknown step names are skipped
+  //  *      - Agar steps empty or not array, return identity function
+
+  function recipePipe(spice) {
+    if (
+      steps === null ||
+      steps === undefined ||
+      steps.length === 0 ||
+      !Array.isArray(steps)
+    )
+      return spice;
+
+    let stepsFunctionsMapping = {
+      grind: grind,
+      roast: roast,
+      mix: mix,
+      pack: pack,
+      compose: compose,
+      pipe: pipe,
+    };
+
+    steps.forEach((e) => {
+      if (Object.keys(stepsFunctionsMapping).includes(e))
+        spice = stepsFunctionsMapping[e](spice);
+    });
+    return spice;
+  }
+
+  return recipePipe;
 }

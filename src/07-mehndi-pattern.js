@@ -54,20 +54,55 @@
  */
 export function repeatChar(char, n) {
   // Your code here
+  if (!char || typeof char !== "string") return "";
+
+  // using base condition for preventing infinite loop
+  if (n <= 0) return "";
+
+  // using the function repeatChar instead of using loop
+  return char + repeatChar(char, n - 1);
 }
 
 export function sumNestedArray(arr) {
   // Your code here
+  if (!Array.isArray(arr) || arr.length === 0) return 0;
+  return arr.reduce((sum, item) => {
+    if (Array.isArray(item)) return sum + sumNestedArray(item);
+    if (typeof item === "number") return sum + item;
+    return sum; // skip non-numbers
+  }, 0);
 }
 
 export function flattenArray(arr) {
   // Your code here
+  if (!Array.isArray(arr) || arr.length === 0) return [];
+
+  // flattening an array using reduce
+
+  return arr.reduce((acc, item) => {
+    return Array.isArray(item)
+      ? acc.concat(flattenArray(item))
+      : [...acc, item];
+  }, []);
 }
 
 export function isPalindrome(str) {
   // Your code here
+  if (typeof str !== "string") return false;
+
+  str = str.toLowerCase(); // converting to lowercase
+  if (str.length <= 1) return true;
+  if (str[0] !== str[str.length - 1]) return false;
+  return isPalindrome(str.slice(1, -1));
 }
 
 export function generatePattern(n) {
   // Your code here
+  if (!Number.isInteger(n) || n <= 0) return [];
+  if (n === 1) return ["*"];
+
+  const prev = generatePattern(n - 1);
+  const ascending = prev.slice(0, n - 1); // take only ascending part
+  const peak = "*".repeat(n);
+  return [...ascending, peak, ...[...ascending].reverse()];
 }

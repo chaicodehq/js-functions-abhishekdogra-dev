@@ -39,20 +39,75 @@
  */
 export const calcStrikeRate = (runs, balls) => {
   // Your code here
+  if (balls <= 0 || runs < 0) return 0;
+
+  let strikeRate = Number(((runs / balls) * 100).toFixed(2));
+
+  return strikeRate;
 };
 
 export const calcEconomy = (runsConceded, overs) => {
   // Your code here
+  //   2. calcEconomy(runsConceded, overs)
+  //  *      - Economy = runsConceded / overs, rounded to 2 decimal places
+  //  *      - Agar overs <= 0 ya runsConceded < 0, return 0
+
+  if (overs <= 0 || runsConceded < 0) return 0;
+
+  let Economy = Number((runsConceded / overs).toFixed(2));
+
+  return Economy;
 };
 
 export const calcBattingAvg = (totalRuns, innings, notOuts = 0) => {
   // Your code here
+  //  *   3. calcBattingAvg(totalRuns, innings, notOuts = 0)
+  //  *      - Batting avg = totalRuns / (innings - notOuts), rounded to 2 decimal places
+  //  *      - Default notOuts = 0
+  //  *      - Agar innings - notOuts <= 0, return 0
+  if (innings - notOuts <= 0) return 0;
+
+  let battingAvg = Number((totalRuns / (innings - notOuts)).toFixed(2));
+
+  return battingAvg;
 };
 
 export const isAllRounder = (battingAvg, economy) => {
   // Your code here
+  //  *   4. isAllRounder(battingAvg, economy)
+  //  *      - Return true agar battingAvg > 30 AND economy < 8
+  return battingAvg > 30 && economy < 8;
 };
 
 export const getPlayerCard = (player) => {
   // Your code here
+  //  *   5. getPlayerCard(player)
+  //  *      - player object: { name, runs, balls, totalRuns, innings, notOuts, runsConceded, overs }
+  //  *      - Return: { name, strikeRate, economy, battingAvg, isAllRounder }
+  //  *      - Use the above functions internally
+  //  *      - Agar player null/undefined hai ya name missing, return null
+  if (player === null || player === undefined || player.name === undefined)
+    return null;
+
+  let name = player.name;
+
+  let strikeRate = calcStrikeRate(player.runs, player.balls);
+
+  let economy = calcEconomy(player.runsConceded, player.overs);
+
+  let battingAvg = calcBattingAvg(
+    player.totalRuns,
+    player.innings,
+    player.notOuts,
+  );
+
+  let allRounderCheck = isAllRounder(battingAvg, economy);
+
+  return {
+    name,
+    strikeRate,
+    economy,
+    battingAvg,
+    isAllRounder: allRounderCheck,
+  };
 };
